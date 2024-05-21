@@ -2,6 +2,8 @@ class Formacion{
 	const locomotoras = []
 	const vagones = []
 	
+	method locomotoras() = locomotoras
+	method vagones() = vagones
 	method pasajeros()=vagones.sum({v=>v.pasajerosMax()})
 	method vagonesPopulares()=vagones.count({v=>v.pasajerosMax()>50})
 	method esCarguera()=vagones.all({v=>v.cargaMax()>1000})
@@ -21,6 +23,10 @@ class Formacion{
 	method cuantoFaltaParaEmpujar() = 
 		if(self.puedeMoverse()) 0 
 		else self.pesoFormacion() - self.pesoArrastreTotal() 
+	//etapa 3
+	method vagonMasPesado()= vagones.max({v=>v.pesoMax()})
+	method esCompleja() = ((locomotoras.size()+vagones.size())>8) or (self.pesoFormacion()>80000)
+	method agregarLocomotora(unaLocomotora){locomotoras.add(unaLocomotora)}
 }
 
 class VagonPasajeros{
@@ -73,3 +79,50 @@ class Locomotora{
 	method velocidadMax() = velocidadMax
 	method eficiente() = puedeArrastrar >= (peso*5)
 }
+
+class Deposito{
+	var formaciones = []
+	var locomotorasSueltas = []
+	
+	method formaciones() = formaciones
+	method locomotorasSueltas() = locomotorasSueltas
+	method vagonesMasPesados(){
+		const vagonesMasPesados = formaciones.map({f=>f.vagonMasPesado()})
+		return vagonesMasPesados.asSet()
+	}
+	method seNecesitaConductorExperto() = formaciones.any({f=>f.esCompleja()})
+	method agregarUnaLocomotoraA(unaFormacion){
+		if(formaciones.contains(unaFormacion)){
+			if(not unaFormacion.puedeMoverse()){
+				var locomotora = locomotorasSueltas.find({loc=>loc.puedeArrastrar()>unaFormacion.cuantoFaltaParaEmpujar()})
+				unaFormacion.agregarLocomotora(locomotora)	
+			}else{}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
