@@ -1,0 +1,24 @@
+import administracionFerroviaria.*
+
+const vagonPasajeros1 = new VagonPasajeros(largo = 10, ancho = 4, tieneBanio = true, estaOrdenado = true)
+const vagonPasajeros2 = new VagonPasajeros(largo = 7, ancho = 2, tieneBanio = false, estaOrdenado = false)
+const vagonCarga = new VagonCarga(cargaMaxima = 6800, maderasSueltas = 5)
+const vagonDormitorio = new VagonDormitorio(compartimientos = 8, camas = 3)
+const locomotora1 = new Locomotora(peso = 3000, puedeArrastrar = 20000, velocidadMax = 80)
+const locomotora2 = new Locomotora(peso = 5000, puedeArrastrar = 22000, velocidadMax = 70)	
+	
+test "formacion con locomotora1" {
+	const formacion = new Formacion(vagones=[vagonPasajeros1,vagonPasajeros2,vagonCarga,vagonDormitorio], locomotoras=[locomotora1])
+	
+	assert.that(formacion.esEficiente())
+	assert.notThat(formacion.puedeMoverse())
+	assert.equals(12800,formacion.cuantoFaltaParaEmpujar())
+}
+
+test "formacion con locomotora1 y 2" {
+	const formacion = new Formacion(vagones=[vagonPasajeros1,vagonPasajeros2,vagonCarga,vagonDormitorio], locomotoras=[locomotora1,locomotora2])
+	
+	assert.notThat(formacion.esEficiente())
+	assert.that(formacion.puedeMoverse())
+	assert.equals(0,formacion.cuantoFaltaParaEmpujar())
+}

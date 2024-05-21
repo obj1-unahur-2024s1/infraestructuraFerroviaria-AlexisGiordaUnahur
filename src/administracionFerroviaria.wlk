@@ -10,6 +10,17 @@ class Formacion{
 	method hacerMantenimiento()=vagones.forEach({v=>v.recibirMantenimiento()})
 	method estaEquilibrada()= (vagones.max({v=>v.pasajerosMax()}).pasajerosMax() - vagones.min({v=>v.pasajerosMax()}).pasajerosMax()) < 20
 	//method estaOrganizada() = ni idea
+	//etapa 2
+	method velocidadMax() = locomotoras.min({loc=>loc.velocidadMax()})
+	method esEficiente() = locomotoras.all({loc=>loc.eficiente()})
+	method pesoMaxLocomotoras() = locomotoras.sum({loc=>loc.peso()})
+	method pesoMaxVagones() = vagones.sum({v=>v.pesoMax()})
+	method pesoFormacion() = self.pesoMaxLocomotoras() + self.pesoMaxVagones()
+	method pesoArrastreTotal() = locomotoras.sum({loc=>loc.puedeArrastrar()})
+	method puedeMoverse() = self.pesoArrastreTotal() >= self.pesoFormacion()
+	method cuantoFaltaParaEmpujar() = 
+		if(self.puedeMoverse()) 0 
+		else self.pesoFormacion() - self.pesoArrastreTotal() 
 }
 
 class VagonPasajeros{
@@ -50,4 +61,15 @@ class VagonDormitorio{
 	method cargaMax()=1200
 	method pesoMax()= 4000 + (80*self.pasajerosMax()) + self.cargaMax()
 	method recibirMantenimiento(){}
+}
+
+class Locomotora{
+	var peso
+	var puedeArrastrar
+	var velocidadMax
+	
+	method peso() = peso
+	method puedeArrastrar() = puedeArrastrar
+	method velocidadMax() = velocidadMax
+	method eficiente() = puedeArrastrar >= (peso*5)
 }
